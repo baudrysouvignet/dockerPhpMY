@@ -1,0 +1,41 @@
+services:
+  php:
+    image: webdevops/php-apache:7.4
+    ports: 
+    - 0.0.0.0:80:80
+    - 0.0.0.0:443:443
+    working_dir: /app
+    volumes:
+    - ./html:/app
+    environment:
+      PHP_DATE_TIMEZONE: Europe/Paris
+      PHP_DISPLAY_ERRORS: 1
+      DB_HOST: mariadb
+      DB_USER: myUser
+      DB_PASSWORD: Secr3t
+      DB_NAME: name_of_the_database
+
+  mariadb:
+    image: mariadb
+    restart: always
+
+    # Si tu n'as pas besoin de te connecter à ce service depuis l'extérieur de ce docker-compose, alors tu n'as pas besoin d'exposer le port
+    # ports: [0.0.0.0:3306:3306]
+    
+    volumes:
+    - ./mariadb-data/:/var/lib/mysql/
+    environment:
+      MARIADB_DATABASE: name_of_the_database
+      MARIADB_USER: myUser
+      MARIADB_PASSWORD: Secr3t
+      MARIADB_ROOT_PASSWORD: R0oT_Secr3t
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports: [0.0.0.0:8080:8080]
+    environment:
+      DB_HOST: mariadb
+      DB_USER: myUser
+      DB_PASSWORD: Secr3t
+      DB_NAME: name_of_the_database
